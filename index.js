@@ -54,6 +54,7 @@ async function run() {
     const foodCollection = client.db("foodDb").collection("foods");
     const userFoodCollection = client.db("foodDb").collection("userFoods");
     const bookingCollection = client.db("foodDb").collection("bookings");
+    const commentCollection = client.db("foodDb").collection("comments");
 
     //json-web-token-api
     app.post("/jwt", (req, res) => {
@@ -225,6 +226,16 @@ async function run() {
       const result = await bookingCollection.find(query).toArray();
       res.send(result);
     });
+    //user-comment
+    app.post('/comments', verifyJWt, async(req, res)=>{
+      const comment = req.body;
+      const result = await commentCollection.insertOne(comment);
+      res.send(result);
+    })
+    app.get('/comments', verifyJWt, async(req, res)=>{
+      const result = await commentCollection.find().toArray();
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
